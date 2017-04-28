@@ -25,7 +25,8 @@ CONSUMNER_CNT = 20
 crawling_results = []
 results_lock = Lock()
 
-class Producer(threading.Thread):
+# single tweet crawler supervisor thread
+class Tweet_Supervisor(threading.Thread):
     def __init__(self, q, name_list):
         threading.Thread.__init__(self)
         self.q = q
@@ -40,7 +41,8 @@ class Producer(threading.Thread):
         for i in range(CONSUMNER_CNT):
             self.q.put(None)
 
-class Tweet_Crawler(threading.Thread):
+# single tweet cralwer thread
+class Tweet_Worker(threading.Thread):
     def __init__(self, auth, q):
         threading.Thread.__init__(self)
         self.q = q
@@ -137,3 +139,14 @@ class Tweet_Crawler(threading.Thread):
                                "word_bag": word_bag})
 
         return processed_results
+
+# Tweet crawler would crawl tweet data and store into HBase database
+class Tweet_Crawler:
+    def __init__(self, auth):
+        self.auth = auth
+
+    def crawler_follower():
+        
+
+
+
