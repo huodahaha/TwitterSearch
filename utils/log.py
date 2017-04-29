@@ -2,7 +2,7 @@
 
 import logging
 
-from SearchEngine.conf import LOG_LEVEL, CUR_WORK_DIRECTORY
+from TwitterSearch.conf import LOG_LEVEL, CUR_WORK_DIRECTORY
 from . import mkdir_p
 
 WSE_LOG_NAME = "WSE.log"

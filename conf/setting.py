@@ -1,7 +1,13 @@
 #encoding=utf-8
 
+import os
+
+CUR_WORK_DIRECTORY = os.getcwd()
+
 # Database
 HBASE_DOMAIN = "localhost"
+RAW_DATA_TABLE = "Twitter_DataTable"
+IS_TEST = False
 
 # Log Level: DEBUG/WARNING/INFO/ERROR
 LOG_LEVEL = "INFO"
@@ -14,4 +20,4 @@ ACCESS_TOKEN_SECRET = "6ZlCG3Tzqz7TnHjGUuTvlvrAo92gNM2BBKK503cEWDZtF"
 
 # Twitter Crawler
 THREAD_CNT = 20
-JOB_QUEUE_CNT = 2*THREAD_CNT
+JOB_QUEUE_LEN = 2*THREAD_CNT
