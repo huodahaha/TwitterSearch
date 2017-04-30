@@ -109,33 +109,31 @@ def test_generator():
 
 @unit_test_deco
 def test_keywords():
-    get_keyword('realDonaldTrump')
-
-@unit_test_deco
-def test_related_users_keywords():
-    get_related_keywords('realDonaldTrump', 20)
+    result, users = get_keywords('realDonaldTrump', related_cnt = 5)
+    print result
 
 @unit_test_deco
 def test_search_text():
-    print "2017-1-1 -> 2017-5-1"
-    start_ts = date2ts(2017,1,1)
-    end_ts = date2ts(2017,5,1)
-    result = search_text('realDonaldTrump', 'china trade', start_ts, end_ts, related_cnt = 10)
+    # print "2017-1-1 -> 2017-5-1"
+    # start_ts = date2ts(2017,1,1)
+    # end_ts = date2ts(2017,5,1)
+    # result = search_text('realDonaldTrump', 'china trade', start_ts, end_ts, related_cnt = 10)
 
-    top_n = min(100, len(result))
-    print "Top %d"%top_n
-    for i in range(top_n):
-        print result[i]
+    # top_n = min(100, len(result))
+    # print "Top %d"%top_n
+    # for i in range(top_n):
+        # print result[i]
 
     print "2016-6-1 -> 2017-1-1"
     start_ts = date2ts(2016,6,1)
     end_ts = date2ts(2017,1,1)
-    result = search_text('realDonaldTrump', 'askjbdfhawkjehrjkahfdasd', start_ts, end_ts)
+    result, users = search_text('realDonaldTrump', 'china japan', start_ts, end_ts)
+    print result
  
-    top_n = min(100, len(result))
-    print "Top %d"%top_n
-    for i in range(top_n):
-        print result[i]
+    # top_n = min(100, len(result))
+    # print "Top %d"%top_n
+    # for i in range(top_n):
+        # print result[i]
 
 @unit_test_deco
 def test_get_twitter_by_tid():

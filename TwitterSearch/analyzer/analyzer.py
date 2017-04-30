@@ -127,16 +127,20 @@ class Keyword_Analyzer:
 
         return sorted_documents
         
-def get_keyword(users, start_ts = 0, end_ts = 0):
+def get_keywords(user, start_ts = 0, end_ts = 0, related_cnt = 0):
     """
+    search a user and his related users keyword
     use tf-idf and tweet impact score to calculate every word's score.
-    Rank all the word.
     """
-
-    if not isinstance(users, list):
-        users = [users]
-    # 1. crawl data
     c = Tweet_Crawler()
+    users = [user]
+    if related_cnt != 0:
+        related_users = c.get_related(user)
+
+        # since twitter API has rate limit, default related users is 10
+        users = related_users[0:related_cnt]
+
+    # 1. crawl data
     c.crawler_users(users)
 
     # 2. build reverted list
@@ -145,26 +149,11 @@ def get_keyword(users, start_ts = 0, end_ts = 0):
 
     # 3. calculate keywords
     keywords = analyzer.calculate_keywords()
-
-    # 4. show keywords
-    top_n = min(100, len(keywords))
-    print "Top %d"%top_n
-    for i in range(top_n):
-        print keywords[i]
-
-def get_related_keywords(user, start_ts = 0, end_ts = 0, cnt = 10):
-    """
-    search a user and his related users keyword
-    """
-    c = Tweet_Crawler()
-    users = [user]
-    if cnt != 0:
-        related_users = c.get_related(user)
-
-        # since twitter API has rate limit, default related users is 10
-        users = related_users[0:cnt]
-
-    get_keyword(users, start_ts, end_ts)
+    result = keywords[0:100]
+    if related_cnt == 0:
+        return result, []
+    else:
+        return result, users
 
 def search_text(user, text, start_ts = 0, end_ts = 0, related_cnt = 0):
     """
@@ -189,4 +178,8 @@ def search_text(user, text, start_ts = 0, end_ts = 0, related_cnt = 0):
     analyzer.build_reverted_lists()
 
     # 3. calculate keywords
-    return analyzer.search_word(text)
+    result = analyzer.search_word(text)
+    if related_cnt == 0:
+        return result, []
+    else:
+        return result, users
