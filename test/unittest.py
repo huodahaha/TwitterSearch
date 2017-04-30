@@ -12,6 +12,7 @@ from TwitterSearch.analyzer.hbase_connection import *
 from TwitterSearch.analyzer.data_crawler import *
 from TwitterSearch.analyzer.exceptions import * 
 from TwitterSearch.analyzer.analyzer import * 
+from TwitterSearch.utils.util import date2ts
 
 from nose.tools import (
     assert_dict_equal,
@@ -117,7 +118,16 @@ def test_related_users_keywords():
 
 @unit_test_deco
 def test_search_text():
-    search_text('realDonaldTrump', 'china trade')
+    print "2017-1-1 -> 2017-5-1"
+    start_ts = date2ts(2017,1,1)
+    end_ts = date2ts(2017,5,1)
+    search_text('realDonaldTrump', 'china trade', start_ts, end_ts)
+
+    print "2016-6-1 -> 2017-1-1"
+    start_ts = date2ts(2016,6,1)
+    end_ts = date2ts(2017,1,1)
+    search_text('realDonaldTrump', 'china trade', start_ts, end_ts)
+
 
 @unit_test_deco
 def test_get_twitter_by_tid():
@@ -128,3 +138,7 @@ def test_get_twitter_by_tid():
     result = get_raw_data([test_name])
     id = result[0]["id"]
     print get_twitter_by_id(id)
+
+def reset_database():
+    delete_table(RAW_DATA_TABLE)
+    delete_table(ID_DATA_TABLE)

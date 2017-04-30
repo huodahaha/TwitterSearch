@@ -86,6 +86,8 @@ class Keyword_Analyzer:
         documents_score = {}
 
         for keyword in keywords:
+            if not keyword in self.reverted_idx:
+                continue
             documents_list = self.reverted_idx[keyword]
             idf = log(self.total_tweets_cnt/len(documents_list))            
 

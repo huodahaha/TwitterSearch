@@ -22,4 +22,4 @@ ACCESS_TOKEN_SECRET = "6ZlCG3Tzqz7TnHjGUuTvlvrAo92gNM2BBKK503cEWDZtF"
 
 # Twitter Crawler
 THREAD_CNT = 20
-DEFAULT_TIME_DURATION = 100     # count by day
+DEFAULT_TIME_DURATION = 365     # count by day

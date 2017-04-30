@@ -1,6 +1,6 @@
 #encoding=utf-8
 
-import os, errno
+import os, errno, datetime, time
 
 def mkdir_p(path):
     try:
@@ -9,3 +9,7 @@ def mkdir_p(path):
         if exc.errno == errno.EEXIST and os.path.isdir(path):
             pass
         else: raise
+
+def date2ts(_year, _month, _day):
+    dt = datetime.datetime(year = _year, month = _month, day = _day)
+    return int(time.mktime(dt.timetuple()))
