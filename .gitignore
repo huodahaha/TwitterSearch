@@ -93,3 +93,6 @@ ENV/
 
 # tmp
 tmp/
+
+# hbase
+hbase-1.2.5/
