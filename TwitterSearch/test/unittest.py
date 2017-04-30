@@ -14,6 +14,8 @@ from TwitterSearch.analyzer.exceptions import *
 from TwitterSearch.analyzer.analyzer import * 
 from TwitterSearch.utils.util import date2ts
 
+import pdb
+
 from nose.tools import (
     assert_dict_equal,
     assert_equal,
@@ -121,13 +123,18 @@ def test_search_text():
     print "2017-1-1 -> 2017-5-1"
     start_ts = date2ts(2017,1,1)
     end_ts = date2ts(2017,5,1)
-    search_text('realDonaldTrump', 'china trade', start_ts, end_ts)
+    result = search_text('realDonaldTrump', 'china trade', start_ts, end_ts)
+
+    pdb.set_trace()
+    top_n = min(100, len(result))
+    print "Top %d"%top_n
+    for i in range(top_n):
+        print result[i]
 
     print "2016-6-1 -> 2017-1-1"
     start_ts = date2ts(2016,6,1)
     end_ts = date2ts(2017,1,1)
-    search_text('realDonaldTrump', 'china trade', start_ts, end_ts)
-
+    search_text('realDonaldTrump', 'askjbdfhawkjehrjkahfdasd', start_ts, end_ts)
 
 @unit_test_deco
 def test_get_twitter_by_tid():

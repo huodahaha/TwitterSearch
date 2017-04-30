@@ -140,27 +140,31 @@ def get_related_keywords(user, start_ts = 0, end_ts = 0, cnt = 10):
     search a user and his related users keyword
     """
     c = Tweet_Crawler()
-    related_users = c.get_related(user)
+    users = [user]
+    if cnt != 0:
+        related_users = c.get_related(user)
 
-    # since twitter API has rate limit, default related users is 10
-    users = related_users[0:10]
-    users.append(user)
+        # since twitter API has rate limit, default related users is 10
+        users = related_users[0:cnt]
+
     get_keyword(users, start_ts, end_ts)
 
-def search_text(user, text, start_ts = 0, end_ts = 0):
+def search_text(user, text, start_ts = 0, end_ts = 0, related_cnt = 0):
+    # 0. extend user range
+    users = [user]
+    if cnt != 0:
+        related_users = c.get_related(user)
+
+        # since twitter API has rate limit, default related users is 10
+        users = related_users[0:cnt]
+
     # 1. crawl data
     c = Tweet_Crawler()
-    c.crawler_user(user)
+    c.crawler_user(users)
 
     # 2. build reverted list
-    analyzer = Keyword_Analyzer(user, start_ts, end_ts)
+    analyzer = Keyword_Analyzer(users, start_ts, end_ts)
     analyzer.build_reverted_lists()
 
     # 3. calculate keywords
-    keywords = analyzer.search_word(text)
-
-    # 4. show result
-    top_n = min(100, len(keywords))
-    print "Top %d"%top_n
-    for i in range(top_n):
-        print keywords[i]
+    return analyzer.search_word(text)

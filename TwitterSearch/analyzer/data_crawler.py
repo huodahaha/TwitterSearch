@@ -24,6 +24,15 @@ from hbase_connection import *
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+api = tweepy.API(auth)
+
+def user_exist(user_name):
+    ret = True
+    try:
+        api.get_user(user_name)
+    except TweepError, e:
+        ret = False
+    return ret
 
 def text_process(text):
     """
@@ -107,7 +116,6 @@ class Crawler:
         end_time = date.now() - delta
         is_over = False
 
-        api = tweepy.API(auth)
         while not is_over:
             if latest_id is 0:
                 new_tweets = self.api.user_timeline(screen_name = screen_name,count=200)
@@ -148,10 +156,10 @@ class Crawler:
                 logger.error("Twitter API error, local timestamp out of date")
                 raise TimeStampOutofDate 
             elif error_code == 34:
-                logger.error("Twitter API error, User <%s> do not exist"%user)
+                logger.error("Twitter API error, User <%s> do not exist"%screen_name)
                 raise NoneUserException
             elif error_code == 88:
-                logger.error("Twitter API error, reach rate limit"%user)
+                logger.error("Twitter API error, reach rate limit")
                 raise RateLimitException
             else:
                 logger.error("undefined error, message:%s"%error_message)
