@@ -74,7 +74,7 @@ def tweet_process(tweet):
     user_name = tweet.user.screen_name
     text = tweet.text
     processed_text, word_bag = text_process(text)
-    impact_score = log(2.7+tweet.favorite_count + tweet.retweet_count)
+    impact_score = log(10+tweet.favorite_count + tweet.retweet_count)
     # print ts, user_id, text, word_bag
     return {"ts": ts,\
             "id":tweet_id,\
@@ -229,7 +229,10 @@ class Crawl_Worker_Thread(threading.Thread, Crawler):
             if not self.update and is_user_data_exist(user):
                 continue
 
-            self.map_tweets(user, tweet_process, put_raw_data)
+            try:
+                self.map_tweets(user, tweet_process, put_raw_data)
+            except RateLimitException:
+                return
            
 class Tweet_Crawler:
     """

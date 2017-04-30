@@ -60,18 +60,27 @@ class Keyword_Analyzer:
             if len(word) == 1:
                 continue
 
+            # idf is term frequency in all document
             idf = log(self.total_tweets_cnt/len(document_list))
             word_score = 0
             tweets_list = get_twitter_by_id_list(document_list)
+
             for document_id in document_list:
                 text = tweets_list[document_id]["text"].split()
+                if not len(text):
+                    continue
+
+                # count term frequency in a single document
                 cnt = 0
                 for w in text:
                     if w == word:
                         cnt += 1
+
+                # calculate word score
                 tf = (1.0*cnt)/len(text)
                 impact_score = log(len(text))
                 word_score += tf*idf*impact_score
+
             word_scores[word] = word_score
 
         print "analyzing success"
@@ -100,6 +109,7 @@ class Keyword_Analyzer:
 
                     documents_score[document_id] = {\
                             "raw_test":processed_tweet["raw_text"],\
+                            "user_name":processed_tweet["user_name"],\
                             "ts":ts_string,\
                             "score": 0}
                 
@@ -118,6 +128,13 @@ class Keyword_Analyzer:
         return sorted_documents
         
 def get_keyword(users, start_ts = 0, end_ts = 0):
+    """
+    use tf-idf and tweet impact score to calculate every word's score.
+    Rank all the word.
+    """
+
+    if not isinstance(users, list):
+        users = [users]
     # 1. crawl data
     c = Tweet_Crawler()
     c.crawler_users(users)
@@ -150,17 +167,22 @@ def get_related_keywords(user, start_ts = 0, end_ts = 0, cnt = 10):
     get_keyword(users, start_ts, end_ts)
 
 def search_text(user, text, start_ts = 0, end_ts = 0, related_cnt = 0):
+    """
+    search text from a user's timeline
+    note that, if related_cnt > 0, we will seaerch from a even wide range, including 
+    twitter uses who have been mentioned recently by the given user
+    """
+    c = Tweet_Crawler()
     # 0. extend user range
     users = [user]
-    if cnt != 0:
+    if related_cnt != 0:
         related_users = c.get_related(user)
 
         # since twitter API has rate limit, default related users is 10
-        users = related_users[0:cnt]
+        users.extend(related_users[0:related_cnt])
 
     # 1. crawl data
-    c = Tweet_Crawler()
-    c.crawler_user(users)
+    c.crawler_users(users)
 
     # 2. build reverted list
     analyzer = Keyword_Analyzer(users, start_ts, end_ts)

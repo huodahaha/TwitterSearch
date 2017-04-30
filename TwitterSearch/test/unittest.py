@@ -41,9 +41,6 @@ def unit_test_deco(foo):
 
 @unit_test_deco
 def test_hbase_connection():
-    # reset table data
-    delete_table(RAW_DATA_TABLE)
-
     # test put
     tweet_list = []
     tweet_list.append({"ts":1000, "id":2000, "user_name":"111", "text":"text", "word_bag":["word", "bag"]})
@@ -112,20 +109,19 @@ def test_generator():
 
 @unit_test_deco
 def test_keywords():
-    get_keyword(['realDonaldTrump'])
+    get_keyword('realDonaldTrump')
 
 @unit_test_deco
 def test_related_users_keywords():
-    get_related_keywords('realDonaldTrump', 50)
+    get_related_keywords('realDonaldTrump', 20)
 
 @unit_test_deco
 def test_search_text():
     print "2017-1-1 -> 2017-5-1"
     start_ts = date2ts(2017,1,1)
     end_ts = date2ts(2017,5,1)
-    result = search_text('realDonaldTrump', 'china trade', start_ts, end_ts)
+    result = search_text('realDonaldTrump', 'china trade', start_ts, end_ts, related_cnt = 10)
 
-    pdb.set_trace()
     top_n = min(100, len(result))
     print "Top %d"%top_n
     for i in range(top_n):
@@ -134,11 +130,15 @@ def test_search_text():
     print "2016-6-1 -> 2017-1-1"
     start_ts = date2ts(2016,6,1)
     end_ts = date2ts(2017,1,1)
-    search_text('realDonaldTrump', 'askjbdfhawkjehrjkahfdasd', start_ts, end_ts)
+    result = search_text('realDonaldTrump', 'askjbdfhawkjehrjkahfdasd', start_ts, end_ts)
+ 
+    top_n = min(100, len(result))
+    print "Top %d"%top_n
+    for i in range(top_n):
+        print result[i]
 
 @unit_test_deco
 def test_get_twitter_by_tid():
-    delete_table(RAW_DATA_TABLE)
     test_name = 'NYUStern'
     c = Tweet_Crawler()
     c.crawler_user(test_name, True)
@@ -146,6 +146,7 @@ def test_get_twitter_by_tid():
     id = result[0]["id"]
     print get_twitter_by_id(id)
 
-def reset_database():
-    delete_table(RAW_DATA_TABLE)
-    delete_table(ID_DATA_TABLE)
+def test_non_users():
+    start_ts = date2ts(2016,6,1)
+    end_ts = date2ts(2017,1,1)
+    result = get_keyword('1048b9dkwej', start_ts, end_ts) 

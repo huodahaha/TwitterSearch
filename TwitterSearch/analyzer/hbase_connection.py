@@ -10,6 +10,18 @@ from TwitterSearch.conf import \
         HBASE_DOMAIN, \
         RAW_DATA_TABLE, \
         ID_DATA_TABLE
+from TwitterSearch.analyzer.exceptions import *
+
+def reset_database():
+    # delete table
+    delete_table(RAW_DATA_TABLE)
+    delete_table(ID_DATA_TABLE)
+
+    # rebuild table
+    cfs = {"cf":None}
+    connection = happybase.Connection(HBASE_DOMAIN)
+    connection.create_table(RAW_DATA_TABLE, families = cfs)
+    connection.create_table(ID_DATA_TABLE, families = cfs)
 
 def convert_ts(ts):
     return ("%012d"%(int(ts))).encode("ascii")
@@ -21,9 +33,7 @@ def get_table(table_name):
     connection = happybase.Connection(HBASE_DOMAIN)
     table_lists = connection.tables()
     if not table_name in table_lists:
-        cfs = {"cf":None}
-        connection.create_table(table_name, families = cfs)
-
+        raise TableNotExist
     # get table instance
     return connection.table(table_name)
 
