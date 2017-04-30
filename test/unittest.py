@@ -1,9 +1,17 @@
 #encoding=utf-8
+
+"""
+test.unittest
+This module contains the set of test functions.
+"""
+
 from datetime import datetime
 
 from TwitterSearch.conf import RAW_DATA_TABLE
 from TwitterSearch.analyzer.hbase_connection import *
-from TwitterSearch.analyzer.data_crawler import Tweet_Crawler
+from TwitterSearch.analyzer.data_crawler import *
+from TwitterSearch.analyzer.exceptions import * 
+from TwitterSearch.analyzer.analyzer import * 
 
 from nose.tools import (
     assert_dict_equal,
@@ -50,18 +58,53 @@ def test_hbase_connection():
 
 @unit_test_deco
 def test_crawler_single():
-    test_name = "NYUStern"
+    delete_table(RAW_DATA_TABLE)
+    test_name = 'NYUStern'
     c = Tweet_Crawler()
     c.crawler_user(test_name)
     result = get_raw_data([test_name])
     assert_true(len(result) > 0)
     assert_equal(result[0]["user_name"], test_name)
+    assert_equal(is_user_data_exist(test_name), True)
 
 @unit_test_deco
-def test_crawler_single():
+def test_user_not_exist():
+    test_name = "sdfasdfaseqwkjhv"
+    c = Tweet_Crawler()
+    try:
+        c.crawler_user(test_name)
+    except Exception, e:
+        # pdb.set_trace()
+        assert_true(isinstance(e, NoneUserException))
+
+@unit_test_deco
+def test_related_user():
     test_name = "NYUStern"
     c = Tweet_Crawler()
-    c.crawler_user(test_name)
+    ret = c.get_related(test_name)
+    print "mentions %s..."%(str(ret[0:3]))
+
+@unit_test_deco
+def test_crawler_users():
+    test_name = 'Refinery29'
+    c = Tweet_Crawler()
+    c.crawler_users([test_name], True)
     result = get_raw_data([test_name])
     assert_true(len(result) > 0)
     assert_equal(result[0]["user_name"], test_name)
+    assert_equal(is_user_data_exist(test_name), True)
+
+def test_generator():
+    test_name = 'NYUStern'
+    c = Tweet_Crawler()
+    c.crawler_user(test_name, True)
+    gen = get_raw_data_generator(test_name)
+    cnt = 0
+    for tweet in gen:
+        cnt += 1
+        if cnt > 10:
+            break
+        print tweet
+@unit_test_deco
+def test_keywords():
+    get_keyword(['NYUStern'])

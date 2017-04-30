@@ -11,6 +11,7 @@ IS_TEST = False
 
 # Log Level: DEBUG/WARNING/INFO/ERROR
 LOG_LEVEL = "INFO"
+PRINT_SCREEN = True
 
 # Twitter Application Set 
 CONSUMER_KEY        = "IceR7uq5VJ6ohICoxOZ7yXkqi"
@@ -20,4 +21,4 @@ ACCESS_TOKEN_SECRET = "6ZlCG3Tzqz7TnHjGUuTvlvrAo92gNM2BBKK503cEWDZtF"
 
 # Twitter Crawler
 THREAD_CNT = 20
-JOB_QUEUE_LEN = 2*THREAD_CNT
+DEFAULT_TIME_DURATION = 100     # count by day

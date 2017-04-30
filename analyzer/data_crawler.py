@@ -1,6 +1,14 @@
+#encoding=utf-8
+
+"""
+analyzer.data_crawler
+This module provide a wrapper of tweepy, containing text processing
+data persistencce, multithread crawling
+"""
+
 import tweepy
 from tweepy.error import *
-import re, json, time, Queue, threading
+import re, json, time, Queue, threading, pdb
 from datetime import timedelta as duration
 from datetime import datetime as date
 from threading import Lock
@@ -9,20 +17,17 @@ from sets import Set
 from TwitterSearch.stopword import stopwords
 from TwitterSearch.utils import logger
 
-from TwitterSearch.conf import \
-        CONSUMER_KEY,\
-        CONSUMER_SECRET,\
-        ACCESS_TOKEN,\
-        ACCESS_TOKEN_SECRET,\
-        THREAD_CNT,\
-        JOB_QUEUE_LEN,\
-        RAW_DATA_TABLE
-
+from TwitterSearch.conf import *
 from exceptions import *
 from hbase_connection import *
 
-# process tweet text, filter out all the illegal text
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+
 def text_process(text):
+    """
+    process tweet text, filter out all the illegal text
+    """
     # https:// pattern
     text = re.sub("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]", "", text)
 
@@ -39,17 +44,18 @@ def text_process(text):
     text = text.lower()
 
     # filter out consecutive spaces
-    processed_text = re.sub(" +", " " , text.strip()).split(" ")
-
+    processed_text = re.sub(" +", " " , text.strip())
     # filter out stop words
-    word_bag = Set(processed_text)
+    word_bag = Set(processed_text.split(" "))
     word_bag = list(word_bag - stopwords)
 
     return processed_text, word_bag
 
 
-# process tweet, extract all the infomation we need
 def tweet_process(tweet):
+    """
+    process tweet, extract all the infomation we need
+    """
     if tweet.lang != "en":
         return None
 
@@ -66,8 +72,10 @@ def tweet_process(tweet):
             "word_bag": word_bag}
 
 
-# extract mentioned users list within a tweet
 def extract_mention(tweet):
+    """
+    extract mentioned users list within a tweet
+    """
     ret = []
     for mention in tweet.entities['user_mentions']:
         ret.append(mention['screen_name'])
@@ -75,11 +83,16 @@ def extract_mention(tweet):
 
 
 class Crawler:
+    """ 
+    a tweepy wrapper
+    """
     def __init__(self, auth):
+        self.auth = auth
         self.api = tweepy.API(auth)
+        pass
 
     # get all tweets raw data for a given duration
-    def get_all_tweets(self, screen_name, delta = duration(days = 365)):
+    def get_all_tweets(self, screen_name, delta = duration(days = DEFAULT_TIME_DURATION)):
         all_tweets = []
         new_tweets = []
 
@@ -90,6 +103,7 @@ class Crawler:
         end_time = date.now() - delta
         is_over = False
 
+        api = tweepy.API(auth)
         while not is_over:
             if latest_id is 0:
                 new_tweets = self.api.user_timeline(screen_name = screen_name,count=200)
@@ -113,17 +127,44 @@ class Crawler:
 
         return all_tweets
 
-    # fun should be type fun => single object
-    def map_tweets(self, screen_name, fun):
-        all_tweets = self.get_all_tweets(screen_name)
-        processed_results = map((lambda t:[fun(t)]), all_tweets)
+    def map_tweets(self, screen_name, proc_fun, store_func = None):
+        """
+        map tweet with a given process function
+        proc_fun should be type of <tweet object => processed object>
+        store func should be type of <processed object => None>
+        """
+        # 1. get raw data from API
+        try:
+            all_tweets = self.get_all_tweets(screen_name)
+        except TweepError, e:
+            error_code = e[0][0]['code']
+            error_message = e[0][0]['message']
+            if error_code == 135:
+                logger.error("Twitter API error, local timestamp out of date")
+                raise TimeStampOutofDate 
+            elif error_code == 34:
+                logger.error("Twitter API error, User <%s> do not exist"%user)
+                raise NoneUserException
+            else:
+                logger.error("undefined error, message:%s"%error_message)
+                raise UnDefinedException
+
+        # 2. process all data
+        processed_results = map((lambda t:[proc_fun(t)]), all_tweets)
         if len(processed_results):
             processed_results = reduce((lambda a,b:a+b), processed_results)
-        return processed_results
 
+        # 3. save to database or return
+        if not store_func:
+            return processed_results    
+        else:
+            store_func(processed_results)
 
-    # fun should be type fun => list 
     def flatmap_tweets(self, screen_name, fun):
+        """
+        flatmap tweet with a given process function
+        fun should be type fun => list 
+        """
         all_tweets = self.get_all_tweets(screen_name)
         processed_results = map(fun, all_tweets)
         if len(processed_results):
@@ -131,12 +172,15 @@ class Crawler:
         return processed_results
 
 
-# single tweet crawler supervisor thread
 class Tweet_Supervisor(threading.Thread):
+    """
+    thread to add screen names to the queue shared by workers
+    """
     def __init__(self, q, name_list):
         threading.Thread.__init__(self)
         self.q = q
         self.name_list = name_list
+        self.thread_cnt = THREAD_CNT
 
     def run(self):
         # fill the queues 
@@ -144,81 +188,50 @@ class Tweet_Supervisor(threading.Thread):
             self.q.put(screen_name)
 
         # terminate all consumers
-        for i in range(CONSUMNER_CNT):
+        for i in range(self.thread_cnt):
             self.q.put(None)
 
 
-# single tweet cralwer thread
-class Crawler_Thread(threading.Thread):
-    def __init__(self, auth, q):
+class Crawl_Worker_Thread(threading.Thread, Crawler):
+    """
+    twitter crawler thread
+    """
+    def __init__(self, q, update):
         threading.Thread.__init__(self)
+        Crawler.__init__(self, auth)
         self.q = q
-        self.crawler = Crawler(auth)
+        self.update = update
 
     def run(self):
         while True:
-            screen_name = self.q.get()
-            if not screen_name:
+            user = self.q.get()
+
+            if not user:
                 # tasks over
                 break
 
-            # get processed result
-            processed_tweets = self.crawler.map_tweets(screen_name, tweet_process)
+            if not self.update and is_user_data_exist(user):
+                continue
 
-            # save to database
-            put_raw_data(processed_tweets)
-            
-            
-"""
-Tweet crawler would crawl tweet data and store into HBase database
-"""
+            self.map_tweets(user, tweet_process, put_raw_data)
+           
 class Tweet_Crawler:
+    """
+    Tweet crawler would crawl tweet data and store into HBase database
+    """
     def __init__(self):
-        auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-        auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-
         self.crawler = Crawler(auth)
         self.api = tweepy.API(auth)
-        self.auth = auth
     
-    """
-    crawler data single-threadly 
-    if update is set to be True, crawler will ignore the data in database
-    """
     def crawler_user(self, user, update = False):
+        """
+        crawler data single-threadly 
+        if update is set to be True, crawler will ignore the data in database
+        """
         # get processed result
-        if not update:
-            if is_user_data_exist(user):
-                return
-
-        try:
-            processed_tweets = self.crawler.map_tweets(user, tweet_process)
-        # save to database
-        except TweepError, e:
-            if e[0][0]['code'] == 135:
-                raise TimeStampOutofDate 
-
-        put_raw_data(processed_tweets)
-
-    # crawler data multi-threadly
-    # users should be a list
-    def crawler_users(self, users, update = False):
-        workQueue = Queue.Queue(JOB_QUEUE_LEN)
-        threads = []
-
-        producer = Producer(workQueue, users)
-        producer.start()
-        threads.append(producer)
-
-        # start threads 
-        print "starting crawling data"
-        for worker_ID in range(CONSUMNER_CNT):
-            thread = Tweet_Crawler(auth, workQueue)
-            thread.start()
-            threads.append(thread)
-
-        for t in threads:
-            t.join()
+        if not update and is_user_data_exist(user):
+            return
+        self.crawler.map_tweets(user, tweet_process, put_raw_data)
 
     def user_exist(self, user_name):
         try:
@@ -229,6 +242,29 @@ class Tweet_Crawler:
             return False
         return True
 
-    # crawl all the related users(users who have been @) of a given user
     def get_related(self, user_name):
+        """
+        crawl all the related users(users who have been @) of a given user
+        """
         return self.crawler.flatmap_tweets(user_name, extract_mention)
+
+    def crawler_users(self, users, update = False):
+        """
+        crawler data multi-threadly
+        users should be a list
+        """
+        workQueue = Queue.Queue(20)
+        threads = []
+
+        producer = Tweet_Supervisor(workQueue, users)
+        producer.start()
+        threads.append(producer)
+
+        # start thread 
+        for worker_ID in range(THREAD_CNT):
+            thread = Crawl_Worker_Thread(workQueue, update)
+            thread.start()
+            threads.append(thread)
+
+        for t in threads:
+            t.join()

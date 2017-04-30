@@ -16,3 +16,6 @@ class NoneUserException(TwitterSearcherException):
 
 class TimeStampOutofDate(TwitterSearcherException):
     """ TimeStamp out of date """
+
+class UnDefinedException(TwitterSearcherException):
+    """ undefined excepetion, need to implement later"""

@@ -55,7 +55,30 @@ def get_raw_data(user_names, start_ts = 0, end_ts = 0):
         end_ts= int(time.mktime(date.now().timetuple()))
 
     if not isinstance(user_names, list):
-        user_names = [user_name]
+        user_names = [user_names]
+
+    for user_name in user_names:
+        cols.append(("cf:" + user_name).encode("ascii"))
+   
+
+    scanner = table.scan(row_start= convert_ts(start_ts),
+                         row_stop = convert_ts(end_ts),
+                         columns = cols)
+
+    for res in scanner:
+        value = res[1].values()[0]
+        ret.append(pickle.loads(value))
+    return ret
+
+def get_raw_data_generator(user_names, start_ts = 0, end_ts = 0):
+    table = get_raw_table()
+    cols = []
+
+    if not end_ts:
+        end_ts= int(time.mktime(date.now().timetuple()))
+
+    if not isinstance(user_names, list):
+        user_names = [user_names]
 
     for user_name in user_names:
         cols.append(("cf:" + user_name).encode("ascii"))
@@ -69,9 +92,7 @@ def get_raw_data(user_names, start_ts = 0, end_ts = 0):
         info = res[1]
         col = res[1].keys()[0]
         value = res[1].values()[0]
-        ret.append(pickle.loads(value))
-
-    return ret
+        yield pickle.loads(value)
 
 def is_user_data_exist(user_name):
     table = get_raw_table()
