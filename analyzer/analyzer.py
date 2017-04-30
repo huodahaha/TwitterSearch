@@ -10,17 +10,17 @@ from nltk.corpus import wordnet as wn
 
 from TwitterSearch.analyzer.data_crawler import *
 from TwitterSearch.analyzer.hbase_connection import *
+import datetime
 
 import pdb
 
 class Keyword_Analyzer:
     def __init__(self, users, start_ts = 0, end_ts = 0):
+        if not isinstance(users, list):
+            users = [users]
         self.gen = get_raw_data_generator(users, start_ts, end_ts)
         self.reverted_idx = {}
         self.total_tweets_cnt = 0
-
-        # should use database here
-        self.tweets_list = {}
 
     def build_reverted_lists(self):
         """
@@ -35,7 +35,6 @@ class Keyword_Analyzer:
             self.total_tweets_cnt += 1
 
             tweet_id = tweet["id"]
-            self.tweets_list[tweet_id] = tweet["text"]
             for word in tweet["word_bag"]:
                 if word in self.reverted_idx:
                     self.reverted_idx[word].append(tweet_id)
@@ -63,12 +62,13 @@ class Keyword_Analyzer:
 
             idf = log(self.total_tweets_cnt/len(document_list))
             word_score = 0
+            tweets_list = get_twitter_by_id_list(document_list)
             for document_id in document_list:
-                text = self.tweets_list[document_id].split()
+                text = tweets_list[document_id]["text"].split()
                 cnt = 0
                 for w in text:
                     if w == word:
-                        cnt += +1
+                        cnt += 1
                 tf = (1.0*cnt)/len(text)
                 impact_score = log(len(text))
                 word_score += tf*idf*impact_score
@@ -77,11 +77,48 @@ class Keyword_Analyzer:
         print "analyzing success"
         sorted_keywords = sorted(word_scores.items(), lambda x, y: cmp(x[1], y[1]), reverse=True)
         return sorted_keywords
+
+    def search_word(self, text):
+        """
+        boolean retrival
+        """
+        processed_text, keywords = text_process(text)
+        documents_score = {}
+
+        for keyword in keywords:
+            documents_list = self.reverted_idx[keyword]
+            idf = log(self.total_tweets_cnt/len(documents_list))            
+
+            tweets_list = get_twitter_by_id_list(documents_list)
+            for document_id in documents_list:
+                processed_tweet = tweets_list[document_id]
+                if not document_id in documents_score:
+                    ts_string = datetime.datetime.fromtimestamp(processed_tweet["ts"]).\
+                            strftime('%Y-%m-%d %H:%M:%S')
+
+                    documents_score[document_id] = {\
+                            "raw_test":processed_tweet["raw_text"],\
+                            "ts":ts_string,\
+                            "score": 0}
+                
+                text = processed_tweet["text"].split()
+                cnt = 0
+                for w in text:
+                    if w == keyword:
+                        cnt += 1
+                tf = (1.0*cnt)/len(text)
+                word_score = tf*idf*processed_tweet["impact_score"]
+                documents_score[document_id]["score"] += word_score
+
+        sorted_documents = sorted(documents_score.values(), \
+                lambda x, y: cmp(x["score"], y["score"]), reverse=True)
+
+        return sorted_documents
         
 def get_keyword(users, start_ts = 0, end_ts = 0):
     # 1. crawl data
     c = Tweet_Crawler()
-    c.crawler_users(users, True)
+    c.crawler_users(users)
 
     # 2. build reverted list
     analyzer = Keyword_Analyzer(users, start_ts, end_ts)
@@ -91,10 +128,37 @@ def get_keyword(users, start_ts = 0, end_ts = 0):
     keywords = analyzer.calculate_keywords()
 
     # 4. show keywords
-    print "Top 100"
     top_n = min(100, len(keywords))
+    print "Top %d"%top_n
     for i in range(top_n):
         print keywords[i]
 
-def get_related_keywords(user, start_ts, end_ts):
+def get_related_keywords(user, start_ts = 0, end_ts = 0, cnt = 10):
+    """
+    search a user and his related users keyword
+    """
+    c = Tweet_Crawler()
+    related_users = c.get_related(user)
 
+    # since twitter API has rate limit, default related users is 10
+    users = related_users[0:10]
+    users.append(user)
+    get_keyword(users, start_ts, end_ts)
+
+def search_text(user, text, start_ts = 0, end_ts = 0):
+    # 1. crawl data
+    c = Tweet_Crawler()
+    c.crawler_user(user)
+
+    # 2. build reverted list
+    analyzer = Keyword_Analyzer(user, start_ts, end_ts)
+    analyzer.build_reverted_lists()
+
+    # 3. calculate keywords
+    keywords = analyzer.search_word(text)
+
+    # 4. show result
+    top_n = min(100, len(keywords))
+    print "Top %d"%top_n
+    for i in range(top_n):
+        print keywords[i]

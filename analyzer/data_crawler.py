@@ -13,6 +13,7 @@ from datetime import timedelta as duration
 from datetime import datetime as date
 from threading import Lock
 from sets import Set
+from math import log
 
 from TwitterSearch.stopword import stopwords
 from TwitterSearch.utils import logger
@@ -64,11 +65,14 @@ def tweet_process(tweet):
     user_name = tweet.user.screen_name
     text = tweet.text
     processed_text, word_bag = text_process(text)
+    impact_score = log(2.7+tweet.favorite_count + tweet.retweet_count)
     # print ts, user_id, text, word_bag
     return {"ts": ts,\
             "id":tweet_id,\
             "user_name": user_name,\
             "text": processed_text,\
+            "raw_text": text,\
+            "impact_score": impact_score,\
             "word_bag": word_bag}
 
 
@@ -137,6 +141,7 @@ class Crawler:
         try:
             all_tweets = self.get_all_tweets(screen_name)
         except TweepError, e:
+            print e
             error_code = e[0][0]['code']
             error_message = e[0][0]['message']
             if error_code == 135:
@@ -145,6 +150,9 @@ class Crawler:
             elif error_code == 34:
                 logger.error("Twitter API error, User <%s> do not exist"%user)
                 raise NoneUserException
+            elif error_code == 88:
+                logger.error("Twitter API error, reach rate limit"%user)
+                raise RateLimitException
             else:
                 logger.error("undefined error, message:%s"%error_message)
                 raise UnDefinedException
@@ -232,15 +240,6 @@ class Tweet_Crawler:
         if not update and is_user_data_exist(user):
             return
         self.crawler.map_tweets(user, tweet_process, put_raw_data)
-
-    def user_exist(self, user_name):
-        try:
-            user = self.api.get_user(user_name)
-        except TweepError, e:
-            
-            logger.error("user_name <%s> not found"%user_name)
-            return False
-        return True
 
     def get_related(self, user_name):
         """

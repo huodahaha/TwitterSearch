@@ -19,3 +19,6 @@ class TimeStampOutofDate(TwitterSearcherException):
 
 class UnDefinedException(TwitterSearcherException):
     """ undefined excepetion, need to implement later"""
+
+class RateLimitException(TwitterSearcherException):
+    """ crawler rate reach the API upper limit """

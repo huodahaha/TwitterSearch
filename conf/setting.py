@@ -7,6 +7,7 @@ CUR_WORK_DIRECTORY = os.getcwd()
 # Database
 HBASE_DOMAIN = "localhost"
 RAW_DATA_TABLE = "Twitter_DataTable"
+ID_DATA_TABLE = "Tid_DataTable"
 IS_TEST = False
 
 # Log Level: DEBUG/WARNING/INFO/ERROR

@@ -8,10 +8,14 @@ import pdb
 
 from TwitterSearch.conf import \
         HBASE_DOMAIN, \
-        RAW_DATA_TABLE 
+        RAW_DATA_TABLE, \
+        ID_DATA_TABLE
 
 def convert_ts(ts):
     return ("%012d"%(int(ts))).encode("ascii")
+
+def convert_tid(id):
+    return ("%020d"%(int(id))).encode("ascii")
 
 def get_table(table_name):
     connection = happybase.Connection(HBASE_DOMAIN)
@@ -32,6 +36,9 @@ def delete_table(table_name):
 def get_raw_table():
     return get_table(RAW_DATA_TABLE)
 
+def get_tid_table():
+    return get_table(ID_DATA_TABLE)
+
 def put_raw_data(tweet_list):
     table = get_raw_table()
     # write into hbase
@@ -43,8 +50,20 @@ def put_raw_data(tweet_list):
             user_name = tweet["user_name"]
             row_key = convert_ts(ts)
             cloumn = ("cf:" + user_name).encode("ascii")
-            value = pickle.dumps(tweet).encode("ascii") 
+            value = pickle.dumps(tweet)
             b.put(row_key, {cloumn:value})
+
+    table = get_tid_table()
+    # write into hbase
+    with table.batch() as b:
+        for tweet in tweet_list:
+            if not tweet:
+                continue
+            row_key = convert_tid(tweet["id"])
+            cloumn = "cf:tweet".encode("ascii")
+            value = pickle.dumps(tweet)
+            b.put(row_key, {cloumn:value})
+
 
 def get_raw_data(user_names, start_ts = 0, end_ts = 0):
     table = get_raw_table()
@@ -68,6 +87,24 @@ def get_raw_data(user_names, start_ts = 0, end_ts = 0):
     for res in scanner:
         value = res[1].values()[0]
         ret.append(pickle.loads(value))
+    return ret
+
+def get_twitter_by_id(id):
+    table = get_tid_table()
+    res = table.row(convert_tid(id))
+    if res == None:
+        return res
+    else:
+        return pickle.loads(res["cf:tweet"])
+
+def get_twitter_by_id_list(ids):
+    table = get_tid_table()
+    ret = {}
+    for id in ids:
+        res = table.row(convert_tid(id))
+        if res == None:
+            continue
+        ret[id] = pickle.loads(res["cf:tweet"])
     return ret
 
 def get_raw_data_generator(user_names, start_ts = 0, end_ts = 0):

@@ -5,7 +5,7 @@ test.unittest
 This module contains the set of test functions.
 """
 
-from datetime import datetime
+from datetime import datetime as dt
 
 from TwitterSearch.conf import RAW_DATA_TABLE
 from TwitterSearch.analyzer.hbase_connection import *
@@ -29,9 +29,9 @@ from nose.tools import (
 def unit_test_deco(foo):
     def deco_foo():
         print "%s begin"%foo.__name__
-        start_time = datetime.now()
+        start_time = dt.now()
         foo()
-        end_time = datetime.now()
+        end_time = dt.now()
         print "%s done"%foo.__name__
         print "%s execute time: %s\n\n\n"%(foo.__name__, str(end_time - start_time))
     return deco_foo
@@ -79,9 +79,10 @@ def test_user_not_exist():
 
 @unit_test_deco
 def test_related_user():
-    test_name = "NYUStern"
+    test_name = "realDonaldTrump"
     c = Tweet_Crawler()
     ret = c.get_related(test_name)
+    print "total mention users: %d"%len(ret)
     print "mentions %s..."%(str(ret[0:3]))
 
 @unit_test_deco
@@ -105,6 +106,25 @@ def test_generator():
         if cnt > 10:
             break
         print tweet
+
 @unit_test_deco
 def test_keywords():
-    get_keyword(['NYUStern'])
+    get_keyword(['realDonaldTrump'])
+
+@unit_test_deco
+def test_related_users_keywords():
+    get_related_keywords('realDonaldTrump', 50)
+
+@unit_test_deco
+def test_search_text():
+    search_text('realDonaldTrump', 'china trade')
+
+@unit_test_deco
+def test_get_twitter_by_tid():
+    delete_table(RAW_DATA_TABLE)
+    test_name = 'NYUStern'
+    c = Tweet_Crawler()
+    c.crawler_user(test_name, True)
+    result = get_raw_data([test_name])
+    id = result[0]["id"]
+    print get_twitter_by_id(id)
