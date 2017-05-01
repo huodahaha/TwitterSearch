@@ -30,6 +30,9 @@ Hbase require a Java version over 1.8, and __YOU SHOULD SET $JAVAHOME correctly_
 ./start_hbase.sh.
 # reset databases (need to reset when you first use)
 python reset_database.py
+# use unitest to test the enviroment
+python ./unittest.py
+
 # using stop_hbase.sh to shutdown hbase database
 ./stop_hbase.sh 
 ```
@@ -41,9 +44,8 @@ You may need to download wordnet corpus manualy
 python -m nltk.downloader wordnet
 ```
 
-
 ## Library dependencies
-nltk 
-tweepy (twitter API library for python)
-happybase (for hbase connection)
-flask (web end)
+1. nltk 
+2. tweepy (twitter API library for python)
+3. happybase (for hbase connection)
+4. flask (web end)
