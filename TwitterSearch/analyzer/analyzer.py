@@ -138,7 +138,7 @@ def get_keywords(user, start_ts = 0, end_ts = 0, related_cnt = 0):
         related_users = c.get_related(user)
 
         # since twitter API has rate limit, default related users is 10
-        users = related_users[0:related_cnt]
+        users.extend(related_users[0:related_cnt])
 
     # 1. crawl data
     c.crawler_users(users)
@@ -150,10 +150,7 @@ def get_keywords(user, start_ts = 0, end_ts = 0, related_cnt = 0):
     # 3. calculate keywords
     keywords = analyzer.calculate_keywords()
     result = keywords[0:100]
-    if related_cnt == 0:
-        return result, []
-    else:
-        return result, users
+    return result, map(lambda s: "@"+s, users)
 
 def search_text(user, text, start_ts = 0, end_ts = 0, related_cnt = 0):
     """
@@ -179,7 +176,4 @@ def search_text(user, text, start_ts = 0, end_ts = 0, related_cnt = 0):
 
     # 3. calculate keywords
     result = analyzer.search_word(text)
-    if related_cnt == 0:
-        return result, []
-    else:
-        return result, users
+    return result, map(lambda s: "@"+s, users)
