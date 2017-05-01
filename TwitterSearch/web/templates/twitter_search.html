@@ -1,0 +1,89 @@
+<!Doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSE by DaHuo</title>
+    <link type="text/css" rel="stylesheet" href="../static/twitter.css" />
+    <link rel="stylesheet" href="../static/bootstrap-datetimepicker-master/datepicker.css" />
+
+    <script type="text/javascript" src="../static/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script type="text/javascript" src="../static/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="../static/twitter.js"></script>
+</head>
+
+<body>
+    <div class="header"><img src="../static/Twitter.png" style="width:24px;height:24px;margin-left:100px;margin-top:10px">
+        <span class="copyright">@Copyright Da Huo</span>
+    </div>
+    <div class="content">
+        <div class="left">
+            <div class="left_up">
+                <input type="text" name="username" class="username" placeholder="user name">
+                <input type="text" name="keyword" class="keyword" placeholder="search twitter">
+                <div class="input-group input-daterange">
+                    <input type="text" data-format="yyyy-MM-dd" class="form-control begin_date" value="2017-01-01">
+                    <div class="input-group-addon">to</div>
+                    <input type="text" data-format="yyyy-MM-dd" class="form-control end_date" value="2017-05-01">
+                </div>
+                <label>relevent users: 
+                <select name="words_number" class="words" id="words">
+                  <option value = '0' selected="selected">relevance</option>
+                  <option value = '1'>1</option>
+                  <option value = '2'>2</option>
+                  <option value = '3'>3</option>
+                  <option value = '4'>4</option>
+                  <option value = '5'>5</option>
+                  <option value = '6'>6</option>
+                  <option value = '7'>7</option>
+                  <option value = '8'>8</option>
+                  <option value = '9'>9</option>
+                  <option value = '10'>10</option>
+              </select>
+              </label>
+                <div class="submit-btn">Search Twitts</div>
+            </div>
+            <div class="left_down">
+                <input type="text" name="username" class="username" placeholder="user name">
+
+                <div class="input-group input-daterange">
+                    <input type="text" data-format="yyyy-MM-dd" class="form-control begin_date" value="2017-01-01">
+                    <div class="input-group-addon">to</div>
+                    <input type="text" data-format="yyyy-MM-dd" class="form-control end_date" value="2017-05-01">
+                </div>
+                <label>relevent users
+                <select name="words_number" class="words" id="words">
+                  <option value = '0' selected="selected">relevance</option>
+                  <option value = '1'>1</option>
+                  <option value = '2'>2</option>
+                  <option value = '3'>3</option>
+                  <option value = '4'>4</option>
+                  <option value = '5'>5</option>
+                  <option value = '6'>6</option>
+                  <option value = '7'>7</option>
+                  <option value = '8'>8</option>
+                  <option value = '9'>9</option>
+                  <option value = '10'>10</option>
+              </select>
+              </label>
+                <div class="submit-btn">Anaylize Keywords</div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="loading">
+                <p class="wait">Searching...</p>
+                <img src = "../static/loading.gif" style="margin: 0 auto; height: 300px; width: 600px;"></div>
+            <p class="related_users"></p>
+            <div class="details">
+            </div>
+            <div class="related_users_score"></div>
+            <div class="score_board">
+                <!--<div class="title"></div>-->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

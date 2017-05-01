@@ -13,23 +13,16 @@ def extract_arg(args):
     related_user_cnt = args.get("related_user_cnt")
     related_user_cnt = 0 if not related_user_cnt else int(related_user_cnt)
 
-    start_year = args.get("start_year")
-    start_year = 2016 if not start_year else int(start_year)
+    start_date = args.get("begin_date")
+    end_date = args.get("end_date")
 
-    start_month = args.get("start_month")
-    start_month = 1 if not start_month else int(start_month)
+    start_year =int(start_date.split("/")[2])
+    start_month =int(start_date.split("/")[0])
+    start_day =int(start_date.split("/")[1])
 
-    start_day = args.get("start_day")
-    start_day = 1 if not start_day else int(start_day)
-
-    end_year = args.get("end_year")
-    end_year = 2018 if not end_year else int(end_year)
-
-    end_month = args.get("end_month")
-    end_month = 1 if not end_month else int(end_month)
-
-    end_day = args.get("end_day")
-    end_day = 1 if not end_day else int(end_day)
+    end_year =int(end_date.split("/")[2])
+    end_month =int(end_date.split("/")[0])
+    end_day =int(end_date.split("/")[1])
 
     start_ts = date2ts(start_year, start_month, start_day)
     end_ts = date2ts(end_year, end_month, end_day)
@@ -58,8 +51,8 @@ def search():
         return dump_error_msg("user_name is None")
 
     # 1. extract search text
-    search_text = request.args.get("search_text")
-    if search_text is None:
+    text = request.args.get("search_text")
+    if text is None:
         return dump_error_msg("search text is None")
 
     # 2. extract other parameters
@@ -71,15 +64,16 @@ def search():
 
     # 3. seaerch result
     try:
-        result, users = search_text(user_name, search_text, start_ts, end_ts, related_cnt)
+        result, users = search_text(user_name, text, start_ts, end_ts, related_cnt)
     except NoneUserException:
         return dump_error_msg("user_name does not exist")
     except RateLimitException:
         return dump_error_msg("raeach API rate limit! Wait 15 mininutes and try again")
     except TableNotExist:
         return dump_error_msg("Hbase database unset")
-    except:
-        return dump_error_msg("unexpected error")
+    # except Exception as e:
+	# print e
+        # return dump_error_msg("unexpected error")
     else:
         ret["errcode"] = 0
         ret["errmsg"] = "OK"
@@ -95,9 +89,6 @@ def keyword():
     if user_name is None:
         return dump_error_msg("user_name is None")
 
-    elif user_name != "abmily":
-        return dump_error_msg("user_name does not exist")
-
     # 1. extract other parameters
     start_ts, end_ts, related_cnt = extract_arg(request.args)
     if end_ts <= start_ts:
@@ -106,15 +97,15 @@ def keyword():
         return dump_error_msg("related_cnt should be [0,20]")
 
     try:
-        result, users = get_keywords(user_name, search_text, start_ts, end_ts, related_cnt)
+        result, users = get_keywords(user_name, start_ts, end_ts, related_cnt)
     except NoneUserException:
         return dump_error_msg("user_name does not exist")
     except RateLimitException:
         return dump_error_msg("raeach API rate limit! Wait 15 mininutes and try again")
     except TableNotExist:
         return dump_error_msg("Hbase database unset")
-    except:
-        return dump_error_msg("unexpected error")
+    # except Exception as e:
+	# print e
     else:
         ret["errcode"] = 0
         ret["errmsg"] = "OK"

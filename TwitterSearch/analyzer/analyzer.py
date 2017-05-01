@@ -81,7 +81,7 @@ class Keyword_Analyzer:
                 impact_score = log(len(text))
                 word_score += tf*idf*impact_score
 
-            word_scores[word] = word_score
+            word_scores[word] = round(word_score,2)
 
         print "analyzing success"
         sorted_keywords = sorted(word_scores.items(), lambda x, y: cmp(x[1], y[1]), reverse=True)
@@ -149,7 +149,7 @@ def get_keywords(user, start_ts = 0, end_ts = 0, related_cnt = 0):
 
     # 3. calculate keywords
     keywords = analyzer.calculate_keywords()
-    result = keywords[0:100]
+    result = keywords[0:50]
     return result, map(lambda s: "@"+s, users)
 
 def search_text(user, text, start_ts = 0, end_ts = 0, related_cnt = 0):
