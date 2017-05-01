@@ -8,13 +8,13 @@ Using TwitterSearch, you can search tweets from a given twitter user's timeline.
 Also, the search time range could be set to a specific time spec. The result ranking algorithm combine a tf-idf algorithm
 and tweets' impact score (calulating with each tweet's retweet count and favorite count)
 
-## Feature: Keyword Retrival
+## Feature: Keyword Retrieval
 Using the tf-idf algorithm and tweet impact score, TwitterSearch can give analysis about a certain users
 tweet keyword during a certain time spec.
 
-## Feature: related users
+## Feature: Related Users
 TwitterSearch can analyze a certain twitter user's timeline to give a related users list. We can use this users list to search for
-twitter or make a keyword retrival on a more wide document(tweets) range. However, it may lead to API prohibition since the data would be large.
+twitter or make a keyword retrieval on a more wide document(tweets) range. However, it may lead to API prohibition since the data would be large.
 
 ## Notice:
 1. I use Twitter API to crawl data with my personal twitter API key, so pls keep the API key in TwitterSearch/conf/setting.py

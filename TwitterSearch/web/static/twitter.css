@@ -9,11 +9,11 @@ body{
 }
 .header{
     width: 100%;
-    height: 4%;
+    height: 45px;
     background-color: #0084B4;
 }
 .content{
-	background: #e6ecf0;
+	background:rgb(249,249,249) ;
 	margin: 0 auto 0;
 	position: relative;
 	padding: 55px 20px;
@@ -73,6 +73,17 @@ body{
 	display: inline-block;
 	font-size: 15px;
 }
+label{
+	font-size: 14px;
+	padding: 2%;
+	padding-left: 7%;
+	color:#555;
+	display: block;
+
+}
+select{
+	margin-left: 10px;
+}
 .submit-btn{
 	height: 17%;
 	width: 85%;
@@ -89,7 +100,7 @@ body{
 
 .left_down{
 	height: 35%;
-	margin-top: 5%;
+	margin-top: 10%;
 	background: #fff;
 	padding: 20px;
 	box-shadow: 0 0 5px #555;
@@ -105,6 +116,16 @@ body{
 	height: 800px;
 	/* overflow-y: scroll; */
 	/* overflow-x: hidden; */
+}
+.wait{
+	font-size: 20px;
+	font-weight: bold;
+	color: #0084B4;
+
+}
+.loading{
+	display: none;
+	padding-top: 20px;
 }
 .item{
 	width: 100%;
@@ -134,7 +155,7 @@ body{
 
 .copyright{
 	float: right;
-	padding-right: 10px;
+	padding-right: 30px;
 	color: #fff;
 	padding-top: 10px;
 }
@@ -144,107 +165,6 @@ body{
 	width: 400px;
 	background: #fff;
 }
-.word1{
-	font-size: 50px;
-	color: blue;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
+.related_users_score{
+	margin-bottom: 50px;
 }
-.word2{
-	font-size: 45px;
-	color: red;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
-}
-.word3{
-	font-size: 40px;
-	color: yellow;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
-}
-.word4{
-	font-size: 36px;
-	color: pink;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
-}
-.word5{
-	font-size: 30px;
-	color: green;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
-}
-.word1{
-	font-size: 50px;
-	color: greenyellow;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
-}
-.word6{
-	font-size: 50px;
-	color: grey;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
-}
-.word7{
-	font-size: 50px;
-	color: purple;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
-}
-.word8{
-	font-size: 50px;
-	color: moccasin;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
-}
-.word9{
-	font-size: 50px;
-	color: navajowhite;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
-}
-.word10{
-	font-size: 50px;
-	color: coral;
-	transform:rotate(7deg);
-	-ms-transform:rotate(7deg); 	/* IE 9 */
-	-moz-transform:rotate(7deg); 	/* Firefox */
-	-webkit-transform:rotate(7deg); /* Safari 和 Chrome */
-	-o-transform:rotate(7deg); 	/* Opera */
-}
-
-
-
-
-
