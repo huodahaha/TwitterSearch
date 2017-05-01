@@ -28,9 +28,19 @@ Hbase require a Java version over 1.8, and __YOU SHOULD SET $JAVAHOME correctly_
 ./install.sh 
 # using start_hbase.sh to start hbase database
 ./start_hbase.sh.
+# reset databases (need to reset when you first use)
+python reset_database.py
 # using stop_hbase.sh to shutdown hbase database
 ./stop_hbase.sh 
 ```
+
+## Trouble Shooting
+When runing into “Resource u'corpora/wordnet' not found.  Please use the NLTK” problem
+You may need to download wordnet corpus manualy
+```
+python -m nltk.downloader wordnet
+```
+
 
 ## Library dependencies
 nltk 
