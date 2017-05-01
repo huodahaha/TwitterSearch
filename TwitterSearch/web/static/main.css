@@ -1,0 +1,83 @@
+  html {
+            width: 100%;
+            height: 100%;
+        }
+        
+    body {
+        width: 100%;
+        height: 100%;
+        font-family: arial, sans-serif;
+    }
+    
+    content {
+        height: 100%;
+    }
+    
+    .inputArea {
+        margin: 0 auto;
+        padding-top: 7%;
+        text-align: center;
+    }
+    
+    img {
+        width: 30%;
+    }
+    
+    .box {
+        margin: 2% auto;
+        font-size: 20px;
+    }
+    
+    .searchContent {
+        height: 42px;
+        width: 700px;
+        font-size: 20px;
+        border: none;
+        border-radius: 5px;
+        box-shadow: 0 0 2px;
+        padding-left: 8px;
+    }
+    
+    .searchContent:focus {
+        border-color: #555;
+        outline: none;
+    }
+    
+    .searchContent:hover {
+        box-shadow: 0 0 8px #555;
+    }
+    
+    .words{
+        /*width:70px;*/
+        /*height:45px;*/
+        font-size: 16px;
+        background: #fff;
+        margin-left: -105px;
+        border: none;
+    }
+
+
+    .sub-but {
+        cursor: default;
+        vertical-align: top;
+        display: inline-block;
+        background: #3385ff;
+        height: 46px;
+        text-align: center;
+        color: white;
+        width: 100px;
+        margin-left: 0px;
+        margin-top: -1px;
+        line-height: 42px;
+        border-radius: 1px;
+		font-size: 16px;
+        border: none;
+    }
+    
+    .copyright {
+        position: absolute;
+        bottom: 10px;
+        left: 45%;
+        text-align: center;
+        color: #999;
+    }

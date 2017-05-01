@@ -1,0 +1,127 @@
+html{
+    /*height: 100%;*/
+}
+body{
+    position: relative;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+}
+.content{
+    background: #fff;
+    margin: 0 auto 0;
+    position: relative;
+    height: 100%;
+}
+.banner{
+    /* background: #fafafa; */
+    padding-top:10px;
+    height: 100px;
+    padding-bottom: 10px;
+    background-color: #f2f2f2;
+}
+.footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right:0;
+    padding-top:10px;
+    height: 40px;
+    padding-bottom: 10px;
+    background-color: #f2f2f2;
+    width: 100%;
+    text-align: center;
+}
+.logo {
+    width:200px;
+    cursor:pointer;
+    padding-left: 10px;
+}
+
+.box{
+    display: inline-block;
+    width: 820px;
+    margin-top:-50px;
+    vertical-align:middle;
+    padding-left: 20px;
+}
+
+.searchword{
+    width:700px;
+    height: 38px;
+    font-size: 22px;
+    border:none;
+    box-shadow: 0 0 3px #555;
+    padding-left: 5px;
+}
+
+.words{
+    /*width:70px;*/
+    /*height:45px;*/
+    font-size: 16px;
+    background: #fff;
+    margin-left: -105px;
+    border: none;
+}
+
+.sub-but {
+    cursor: default;
+    vertical-align: top;
+    display: inline-block;
+    background: #3385ff;
+    height: 42px;
+    text-align: center;
+    color: white;
+    width: 100px;
+    margin-left: 0px;
+    margin-top: -1px;
+    line-height: 42px;
+    border-radius: 1px;
+    font-size: 16px;
+    border:none;
+}
+
+.searchicon{
+    vertical-align: middle;
+    margin-left: 10px;    
+}
+.result-cnt{
+    display: inline-block;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 40px;
+
+}
+.details{
+    width: 800px;
+    margin-top: 20px;
+    margin-left: 232px;
+    padding-bottom: 90px;
+}
+.item{
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+.title{
+    color: #1a0dab;
+    font-size: 20px;
+    margin: 0;
+    cursor: pointer;
+}
+.link{
+    color: #006621;
+    font-size: 16px;
+    text-decoration: none;
+}
+.copyright {
+    text-align: center;
+    color: #999;
+    font-size: 15px;
+}
+.no-result{
+    display: none;
+}
+.item{
+    display: black;
+}
+
