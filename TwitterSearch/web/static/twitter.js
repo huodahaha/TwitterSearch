@@ -54,17 +54,21 @@ $(function () {
                             $(".details").append(
                                 "<p style= 'font-size: 16px; color:#0084B4;'>No result returned.<br><br> Note that, TwitterSearch only support Tweet in English. Also, stop word (we /you /if / and....)and is elimated.</p>"
                             )
-
-                        $.each(res.result, function (i, item) {
-                            $(".details").append(
-                                "<div class='item'><span class='user'>" + item.user_name + "</span><span class='twitter-time'>" + item.ts + "</span><p class='text'>" + item.raw_test + "</p><span class='score' style= 'background: #40bbc2; border-radius: 5px;color: #fff; padding: 5px;'>" + "score:&nbsp;&nbsp;" + item.score + "</span></div>"
-                            )
-                        })
-                        $.each(res.related_users, function (i, item) {
+                        else {
+                            $.each(res.result, function (i, item) {
+                                $(".details").append(
+                                    "<div class='item'><span class='user'>" + item.user_name + "</span><span class='twitter-time'>" + item.ts + "</span><p class='text'>" + item.raw_test + "</p><span class='score' style= 'background: #40bbc2; border-radius: 5px;color: #fff; padding: 5px;'>" + "score:&nbsp;&nbsp;" + item.score + "</span></div>"
+                                )
+                            })
                             $(".related_users").append(
-                                "<span style = 'background:#0084B4; color: #fff; margin-right: 20px; padding:5px; font-size: 18px; border-radius: 5px; margin-bottom: 10px;'>" + item + "</span>"
+                               "<span style= 'font-size: 19px;color: #0084B4;'>Relevent Users: &nbsp;&nbsp</span>"
                             )
-                        })
+                            $.each(res.related_users, function (i, item) {
+                                $(".related_users").append(
+                                    "<span style = 'background:#0084B4; color: #fff; margin-right: 20px; padding:5px; font-size: 18px; border-radius: 5px; margin-bottom: 10px;'>" + item + "</span>"
+                                )
+                            })
+                        }
                     }
                 }
             })
@@ -120,25 +124,29 @@ $(function () {
                             $(".score_board").append(
                                 "<p style= 'font-size: 16px; color:#0084B4;'>No result returned.<br> <br>Note that, TwitterSearch only support Tweet in English. Also, stop word (we /you /if / and....) and is elimated.</p>"
                             )
-                        else{
+                        else {
                             $(".score_board").append(
                                 "<div class = 'title' style = 'margin-left: 50px;margin-bottom: 30px;font-size:" + 30 + "px; color:#0084B4; font-weight:bold'>" + "<span class = 'score' style = 'margin-right: 160px; font-weight: bold'>" + "Score" + "</span>" + "Keyword" + "</div>"
                             )
-                        }
-                        $.each(res.result, function (i, item) {
-                            var size = 40 - i * 0.8;
-                            var name = item[0];
-                            var score = item[1];
+                            $.each(res.result, function (i, item) {
+                                var size = 40 - i * 0.8;
+                                var name = item[0];
+                                var score = item[1];
 
-                            $(".score_board").append(
-                                "<div class = 'word' style = 'margin-left: 55px;margin-bottom: 15px;font-size:" + 20 + "px; color:" + getRandomColor() + "'>" + "<span class = 'score' style = 'margin-right: 200px;'>" + score + "</span>" + name + "</div>"
-                            )
-                        })
-                        $.each(res.related_users, function (i, item) {
+                                $(".score_board").append(
+                                    "<div class = 'word' style = 'margin-left: 55px;margin-bottom: 15px;font-size:" + 20 + "px; color:#1da1f2'>" + "<span class = 'score' style = 'margin-right: 200px;'>" + score + "</span>" + name + "</div>"
+                                )
+                            })
                             $(".related_users_score").append(
-                                "<span style = 'background:#0084B4; color: #fff; margin-right: 20px; padding:5px; font-size: 18px; border-radius: 5px; margin-bottom: 10px;'>" + item + "</span>"
+                               "<span style= 'font-size: 19px;color: #0084B4;'>Relevent Users: &nbsp;&nbsp</span>"
                             )
-                        })
+                            $.each(res.related_users, function (i, item) {
+                                $(".related_users_score").append(
+                                    "<span style = 'background:#0084B4; color: #fff; margin-right: 20px; padding:5px; font-size: 18px; border-radius: 5px; margin-bottom: 10px;'>" + item + "</span>"
+                                )
+                            })
+                        }
+
                     }
 
                 }

@@ -6,7 +6,7 @@ __TwitterSearch DOESN'T USE ANY EXTERNAL INFORMATION RETRIVAL LIBARARY like Luce
 ## Feature: Twitter Search
 Using TwitterSearch, you can search tweets from a given twitter user's timeline. 
 Also, the search time range could be set to a specific time spec. The result ranking algorithm combine a tf-idf algorithm
-and tweets' impact score (calulating with each tweet's retweet count and favorite count)
+and tweets' impact score (calculating with each tweet's retweet count and favorite count)
 
 ## Feature: Keyword Retrieval
 Using the tf-idf algorithm and tweet impact score, TwitterSearch can give analysis about a certain users

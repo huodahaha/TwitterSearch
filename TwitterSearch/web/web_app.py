@@ -49,6 +49,7 @@ def search():
 
     if user_name is None:
         return dump_error_msg("user_name is None")
+    user_name = user_name.strip()
 
     # 1. extract search text
     text = request.args.get("search_text")
@@ -71,9 +72,9 @@ def search():
         return dump_error_msg("raeach API rate limit! Wait 15 mininutes and try again")
     except TableNotExist:
         return dump_error_msg("Hbase database unset")
-    # except Exception as e:
-	# print e
-        # return dump_error_msg("unexpected error")
+    except Exception as e:
+        print e
+        return dump_error_msg("unexpected error")
     else:
         ret["errcode"] = 0
         ret["errmsg"] = "OK"
@@ -88,6 +89,7 @@ def keyword():
     user_name = request.args.get("user_name")
     if user_name is None:
         return dump_error_msg("user_name is None")
+    user_name = user_name.strip()
 
     # 1. extract other parameters
     start_ts, end_ts, related_cnt = extract_arg(request.args)
@@ -104,8 +106,8 @@ def keyword():
         return dump_error_msg("raeach API rate limit! Wait 15 mininutes and try again")
     except TableNotExist:
         return dump_error_msg("Hbase database unset")
-    # except Exception as e:
-	# print e
+    except Exception as e:
+        print e
     else:
         ret["errcode"] = 0
         ret["errmsg"] = "OK"

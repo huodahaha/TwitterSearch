@@ -22,15 +22,15 @@
         <div class="left">
             <div class="left_up">
                 <input type="text" name="username" class="username" placeholder="user name">
-                <input type="text" name="keyword" class="keyword" placeholder="search twitter">
+                <input type="text" name="keyword" class="keyword" placeholder="search text">
                 <div class="input-group input-daterange">
                     <input type="text" data-format="yyyy-MM-dd" class="form-control begin_date" value="2017-01-01">
                     <div class="input-group-addon">to</div>
                     <input type="text" data-format="yyyy-MM-dd" class="form-control end_date" value="2017-05-01">
                 </div>
-                <label>relevent users: 
+                <label>Relevent users: 
                 <select name="words_number" class="words" id="words">
-                  <option value = '0' selected="selected">relevance</option>
+                  <option value = '0' selected="selected">0</option>
                   <option value = '1'>1</option>
                   <option value = '2'>2</option>
                   <option value = '3'>3</option>
@@ -43,7 +43,7 @@
                   <option value = '10'>10</option>
               </select>
               </label>
-                <div class="submit-btn">Search Twitts</div>
+                <div class="submit-btn">Search Tweets</div>
             </div>
             <div class="left_down">
                 <input type="text" name="username" class="username" placeholder="user name">
@@ -53,9 +53,9 @@
                     <div class="input-group-addon">to</div>
                     <input type="text" data-format="yyyy-MM-dd" class="form-control end_date" value="2017-05-01">
                 </div>
-                <label>relevent users
+                <label>Relevent users
                 <select name="words_number" class="words" id="words">
-                  <option value = '0' selected="selected">relevance</option>
+                  <option value = '0' selected="selected">0</option>
                   <option value = '1'>1</option>
                   <option value = '2'>2</option>
                   <option value = '3'>3</option>
@@ -74,8 +74,11 @@
         <div class="right">
             <div class="loading">
                 <p class="wait">Searching...</p>
-                <img src = "../static/loading.gif" style="margin: 0 auto; height: 300px; width: 600px;"></div>
-            <p class="related_users"></p>
+                <img src="../static/loading.gif" style="margin: 0 auto; height: 300px; width: 600px;">
+            </div>
+            <p class="related_users">
+                
+            </p>
             <div class="details">
             </div>
             <div class="related_users_score"></div>
