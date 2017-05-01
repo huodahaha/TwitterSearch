@@ -26,13 +26,8 @@ auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
-def user_exist(user_name):
-    ret = True
-    try:
-        api.get_user(user_name)
-    except TweepError, e:
-        ret = False
-    return ret
+def touch_user(user_name):
+    api.get_user(user_name)
 
 def text_process(text):
     """

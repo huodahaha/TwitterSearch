@@ -65,8 +65,10 @@ def search():
 
     # 3. seaerch result
     try:
+        touch_user(user_name)
         result, users = search_text(user_name, text, start_ts, end_ts, related_cnt)
     except NoneUserException:
+        print "None User"
         return dump_error_msg("user_name does not exist")
     except RateLimitException:
         return dump_error_msg("raeach API rate limit! Wait 15 mininutes and try again")
@@ -99,6 +101,7 @@ def keyword():
         return dump_error_msg("related_cnt should be [0,20]")
 
     try:
+        touch_user(user_name)
         result, users = get_keywords(user_name, start_ts, end_ts, related_cnt)
     except NoneUserException:
         return dump_error_msg("user_name does not exist")

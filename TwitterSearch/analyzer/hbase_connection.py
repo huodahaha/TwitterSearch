@@ -128,7 +128,7 @@ def get_raw_data_generator(user_names, start_ts = 0, end_ts = 0):
         user_names = [user_names]
 
     for user_name in user_names:
-        cols.append(("cf:" + user_name).encode("ascii"))
+        cols.append(("cf:" + user_name).encode("utf-8"))
    
 
     scanner = table.scan(row_start= convert_ts(start_ts),
@@ -144,7 +144,7 @@ def get_raw_data_generator(user_names, start_ts = 0, end_ts = 0):
 def is_user_data_exist(user_name):
     table = get_raw_table()
 
-    cols = [("cf:" + user_name).encode("ascii")]
+    cols = [("cf:" + user_name).encode("utf-8")]
     start_ts = 0
     end_ts= int(time.mktime(date.now().timetuple()))
 
